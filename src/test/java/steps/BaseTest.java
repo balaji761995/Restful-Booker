@@ -12,8 +12,8 @@ public class BaseTest {
 
     Properties prop;
     FileInputStream propFilePath;
-    Header header;
-    String userName, password;
+    public static Header header;
+    public static String userName, password;
 
     @BeforeSuite
     public void init() throws IOException {

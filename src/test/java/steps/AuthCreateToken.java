@@ -8,8 +8,7 @@ public class AuthCreateToken extends BaseTest {
 
     String basePath = "/auth";
 
-    @Test
-    public void createAuthToken() {
+    public String createAuthToken() {
 
         AuthCredentialsDTO authCreds = new AuthCredentialsDTO();
         authCreds.setUsername(userName);
@@ -19,12 +18,8 @@ public class AuthCreateToken extends BaseTest {
                 .when().log().everything().post()
                 .then().log().everything().extract().jsonPath().get("token").toString();
 
-        //return token;
+        return token;
 
     }
 
-    @Test
-    public void test(){
-        System.out.println("test");
-    }
 }

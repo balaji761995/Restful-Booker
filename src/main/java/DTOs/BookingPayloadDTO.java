@@ -2,7 +2,7 @@ package DTOs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class CreateBookingDTO {
+public class BookingPayloadDTO {
 
     @JsonProperty
     private String firstname;
