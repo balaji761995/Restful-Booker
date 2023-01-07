@@ -13,7 +13,7 @@ public class BookingPayloadDTO {
     @JsonProperty
     private boolean depositpaid;
     @JsonProperty
-    BookingDates BookingdatesObject;
+    BookingDates bookingdates;
     @JsonProperty
     private String additionalneeds;
 
@@ -41,7 +41,7 @@ public class BookingPayloadDTO {
         this.totalprice = totalprice;
     }
 
-    public boolean isDepositpaid() {
+    public boolean getDepositpaid() {
         return depositpaid;
     }
 
@@ -49,12 +49,12 @@ public class BookingPayloadDTO {
         this.depositpaid = depositpaid;
     }
 
-    public BookingDates getBookingdatesObject() {
-        return BookingdatesObject;
+    public BookingDates getBookingDates() {
+        return bookingdates;
     }
 
-    public void setBookingdatesObject(BookingDates bookingdatesObject) {
-        BookingdatesObject = bookingdatesObject;
+    public void setBookingDates(BookingDates bookingdates) {
+        this.bookingdates = bookingdates;
     }
 
     public String getAdditionalneeds() {

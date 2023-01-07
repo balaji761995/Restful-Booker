@@ -29,12 +29,12 @@ public class ReadDataFromExcel {
 
         int rowCount = sheet.getLastRowNum();    //Get the last row with value
         int colCount = headerRow.getLastCellNum();   //Get the last column with value
-        testData = new Object[rowCount-1];
+        testData = new Object[rowCount];
 
-        for(int i = 0; i <= rowCount; i++){       //Loop works on rows
+        for(int i = 0; i < rowCount; i++){       //Loop works on rows
             List<String> rowValue = new ArrayList<>();
             XSSFRow row = sheet.getRow(i+1);
-            for(int j = 0; j <= colCount; j++){    //Loop works on column
+            for(int j = 0; j < colCount; j++){    //Loop works on column
                 XSSFCell cellValue = row.getCell(j);
                 String value = new DataFormatter().formatCellValue(cellValue);
                 if(value.isEmpty()){
