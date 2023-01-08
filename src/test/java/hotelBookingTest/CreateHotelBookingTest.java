@@ -3,15 +3,22 @@ package hotelBookingTest;
 import DTOFactories.BookingPayloadDTOFactory;
 import DTOs.BookingPayloadDTO;
 import DTOs.CreateBookingResponseDTO;
+import com.relevantcodes.extentreports.LogStatus;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.apache.commons.io.output.WriterOutputStream;
 import org.apache.http.HttpStatus;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import steps.BaseTest;
 import steps.DataProviders;
 import steps.GetBookingDetails;
 
+import java.io.PrintStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 
 public class CreateHotelBookingTest extends BaseTest {
@@ -40,10 +47,20 @@ public class CreateHotelBookingTest extends BaseTest {
         RequestSpecification request = requestSpec.build();
 
         //Post Request to create hotel booking
-        CreateBookingResponseDTO response = RestAssured.given().spec(request).when().log().everything().post()
-                .then().log().everything().statusCode(HttpStatus.SC_OK).extract().as(CreateBookingResponseDTO.class);
+        Response response = RestAssured.given().spec(request).filter(new RequestLoggingFilter(requestCapture))
+                .when().post();
 
-        String bookingId = response.getBookingid();
+        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_OK);
+
+        CreateBookingResponseDTO createBookingResponse = response.as(CreateBookingResponseDTO.class);
+
+        requestCapture.flush();
+
+        //logging request and response in extent report
+        extentTest.get().log(LogStatus.INFO, requestWriter.toString());
+        extentTest.get().log(LogStatus.INFO, "Response : " + response.asPrettyString());
+
+        String bookingId = createBookingResponse.getBookingid();
 
         //Fetch booking details using get request
         BookingPayloadDTO getBookingResponse = new GetBookingDetails().getHotelBookingDetails(bookingId);

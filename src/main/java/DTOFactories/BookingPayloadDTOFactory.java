@@ -12,17 +12,30 @@ public class BookingPayloadDTOFactory {
     public BookingPayloadDTO createBookingPayloadDTOFactoryWithDataProviderTestData(ArrayList<String> testData) {
 
         BookingPayloadDTO payload = new BookingPayloadDTO();
-        payload.setFirstname(testData.get(0));
-        payload.setLastname(testData.get(1));
-        payload.setTotalprice(Float.parseFloat(testData.get(2)));
-        payload.setDepositpaid(Boolean.parseBoolean(testData.get(3)));
+        try{
+            payload.setFirstname(testData.get(0));
+            payload.setLastname(testData.get(1));
 
-        BookingDates bookingDates = new BookingDates();
-        bookingDates.setCheckin(testData.get(4));
-        bookingDates.setCheckout(testData.get(5));
+            if(testData.get(2) == null){
+                payload.setTotalprice(Float.parseFloat(TOTAL_PRICE));
+            }else{
+                payload.setTotalprice(Float.parseFloat(testData.get(2)));
+            }
+            if(testData.get(3) == null){
+                payload.setDepositpaid(true);
+            }else{
+                payload.setDepositpaid(Boolean.parseBoolean(testData.get(3)));
+            }
 
-        payload.setBookingDates(bookingDates);
-        payload.setAdditionalneeds(testData.get(6));
+            BookingDates bookingDates = new BookingDates();
+            bookingDates.setCheckin(testData.get(4));
+            bookingDates.setCheckout(testData.get(5));
+
+            payload.setBookingDates(bookingDates);
+            payload.setAdditionalneeds(testData.get(6));
+        }catch (NullPointerException E){
+            //
+        }
 
         return payload;
 

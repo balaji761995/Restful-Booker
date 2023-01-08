@@ -3,16 +3,23 @@ package hotelBookingTest;
 import DTOFactories.BookingPayloadDTOFactory;
 import DTOs.BookingPayloadDTO;
 import DTOs.CreateBookingResponseDTO;
+import com.relevantcodes.extentreports.LogStatus;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.apache.commons.io.output.WriterOutputStream;
 import org.apache.http.HttpStatus;
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import steps.BaseTest;
 import steps.DataProviders;
 import steps.GetBookingDetails;
 
+import java.io.PrintStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 
 public class UpdateHotelBookingTest extends BaseTest {
@@ -35,8 +42,8 @@ public class UpdateHotelBookingTest extends BaseTest {
         RequestSpecification request = requestSpec.build();
 
         //Post Request to create hotel booking
-        CreateBookingResponseDTO response = RestAssured.given().spec(request).when().log().everything().post()
-                .then().log().everything().statusCode(HttpStatus.SC_OK).extract().as(CreateBookingResponseDTO.class);
+        CreateBookingResponseDTO response = RestAssured.given().spec(request).when().post()
+                .then().statusCode(HttpStatus.SC_OK).extract().as(CreateBookingResponseDTO.class);
 
         bookingId = response.getBookingid();
 
@@ -65,9 +72,16 @@ public class UpdateHotelBookingTest extends BaseTest {
         request.basePath(basePathUpdateBooking);
 
         //Post Request to update hotel booking details
-        BookingPayloadDTO response = request.pathParam("id",bookingId)
-                .when().log().everything().put()
-                .then().statusCode(HttpStatus.SC_OK).extract().as(BookingPayloadDTO.class);
+        Response response = request.pathParam("id",bookingId).filter(new RequestLoggingFilter(requestCapture))
+                .when().put();
+
+        Assert.assertEquals(response.getStatusCode(),HttpStatus.SC_OK);
+
+        requestCapture.flush();
+
+        //logging request and response in extent report
+        extentTest.get().log(LogStatus.INFO, requestWriter.toString());
+        extentTest.get().log(LogStatus.INFO, "Response : " + response.asPrettyString());
 
         //Fetch booking details using get request
         BookingPayloadDTO getBookingResponse = new GetBookingDetails().getHotelBookingDetails(bookingId);

@@ -3,16 +3,22 @@ package hotelBookingTest;
 import DTOFactories.BookingPayloadDTOFactory;
 import DTOs.BookingPayloadDTO;
 import DTOs.CreateBookingResponseDTO;
+import com.relevantcodes.extentreports.LogStatus;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.apache.commons.io.output.WriterOutputStream;
 import org.apache.http.HttpStatus;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import steps.BaseTest;
 import steps.DataProviders;
 import steps.GetBookingDetails;
 
+import java.io.PrintStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 
 public class DeleteHotelBookingTest extends BaseTest {
@@ -35,10 +41,20 @@ public class DeleteHotelBookingTest extends BaseTest {
         RequestSpecification createRequest = requestSpec.build();
 
         //Post Request to create hotel booking
-        CreateBookingResponseDTO response = RestAssured.given().spec(createRequest).when().log().everything().post()
-                .then().log().everything().statusCode(HttpStatus.SC_OK).extract().as(CreateBookingResponseDTO.class);
+        Response response = RestAssured.given().spec(createRequest).filter(new RequestLoggingFilter(requestCapture))
+                .when().post();
 
-        String bookingId = response.getBookingid();
+        Assert.assertEquals(response.getStatusCode(),HttpStatus.SC_OK);
+
+        CreateBookingResponseDTO createBookingResponse = response.as(CreateBookingResponseDTO.class);
+
+        requestCapture.flush();
+
+        //logging request and response in extent report
+        extentTest.get().log(LogStatus.INFO, requestWriter.toString());
+        extentTest.get().log(LogStatus.INFO, "Response : " + response.asPrettyString());
+
+        String bookingId = createBookingResponse.getBookingid();
 
         //Delete the created booking
         RequestSpecification deleteRequest = RestAssured.given();
@@ -46,8 +62,7 @@ public class DeleteHotelBookingTest extends BaseTest {
         deleteRequest.pathParam("id",bookingId);
         deleteRequest.basePath(basePathDeleteBooking);
 
-        deleteRequest.when().log().everything().delete()
-                .then().log().everything().statusCode(HttpStatus.SC_CREATED);
+        deleteRequest.when().delete().then().statusCode(HttpStatus.SC_CREATED);
 
         //Fetch booking details using get request
         Response getBookingResponse = new GetBookingDetails().getHotelBookingToVerifyDeleteRequest(bookingId);

@@ -11,20 +11,16 @@ public class GetBookingDetails extends BaseTest {
 
     public BookingPayloadDTO getHotelBookingDetails(String id){
         BookingPayloadDTO response = RestAssured.given().headers(headers).pathParam("id",id).basePath(basePath)
-                .when().log().everything()
-                .get()
-                .then().log().everything()
-                .statusCode(HttpStatus.SC_OK).extract().as(BookingPayloadDTO.class);
+                .when().get()
+                .then().statusCode(HttpStatus.SC_OK).extract().as(BookingPayloadDTO.class);
 
         return response;
     }
 
     public Response getHotelBookingToVerifyDeleteRequest(String id){
         Response response = RestAssured.given().headers(headers).pathParam("id",id).basePath(basePath)
-                .when().log().everything()
-                .get()
-                .then().log().everything()
-                .statusCode(HttpStatus.SC_NOT_FOUND).extract().response();
+                .when().get()
+                .then().statusCode(HttpStatus.SC_NOT_FOUND).extract().response();
 
         return response;
     }

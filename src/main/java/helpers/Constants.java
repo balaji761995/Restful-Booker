@@ -4,7 +4,7 @@ public class Constants {
 
 
     //Excel test data path
-    public static final String CREATE_HOTEL_BOOKING_TEST_DATA = "resources/testData/HotelBookingTestData.xlsx";
+    public static final String HOTEL_BOOKING_TEST_DATA = "resources/testData/HotelBookingTestData.xlsx";
 
     //Test data for create hotel booking
     public static final String FIRST_NAME = "Gowtham";

@@ -1,14 +1,18 @@
 package steps;
 
+import com.relevantcodes.extentreports.ExtentReports;
+import com.relevantcodes.extentreports.ExtentTest;
 import io.restassured.RestAssured;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.BeforeTest;
+import org.apache.commons.io.output.WriterOutputStream;
+import org.testng.ITestContext;
+import org.testng.annotations.*;
 import org.testng.asserts.SoftAssert;
 
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -20,9 +24,14 @@ public class BaseTest {
     public static Headers headers;
     public static String userName, password;
     public static SoftAssert softAssert;
+    public static StringWriter requestWriter;
+    public static PrintStream requestCapture;
+    public static ExtentTest test;
+    public static ExtentReports extentReports;
+    public static ThreadLocal<ExtentTest> extentTest = new ThreadLocal<ExtentTest>();
 
     @BeforeSuite
-    public void init() throws IOException {
+    public void init(ITestContext context) throws IOException {
 
         propFilePath = new FileInputStream("/Users/admin/IdeaProjects/Restful-Booker/config.properties");
         prop = new Properties();
@@ -30,9 +39,26 @@ public class BaseTest {
         RestAssured.baseURI = prop.getProperty("baseURI");
         userName = prop.getProperty("userName");
         password = prop.getProperty("password");
+
+        //To create request and response log in console
+        RestAssured.filters(new RequestLoggingFilter(),new ResponseLoggingFilter());
+
+        //for extent report creation
+        extentReports = new ExtentReports(System.getProperty("user.dir") + File.separator + "reports" + File.separator
+                +context.getSuite().getName()+"TestResults" + ".html");
+
         softAssert = new SoftAssert();
 
     }
+
+    @BeforeMethod
+    public void loggingRequestAndResponseBody(){
+        //To store the request logs in String
+        requestWriter = new StringWriter();
+        requestCapture = new PrintStream(new WriterOutputStream(requestWriter));
+
+    }
+
 
     @BeforeTest
     public void createHeaders() {
@@ -51,5 +77,6 @@ public class BaseTest {
         headers = new Headers(headerList);
 
     }
+
 
 }
