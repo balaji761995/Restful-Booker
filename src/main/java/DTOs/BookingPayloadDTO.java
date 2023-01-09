@@ -12,7 +12,7 @@ public class BookingPayloadDTO {
     private float totalprice;
     @JsonProperty
     private boolean depositpaid;
-    @JsonProperty
+
     BookingDates bookingdates;
     @JsonProperty
     private String additionalneeds;
@@ -49,11 +49,11 @@ public class BookingPayloadDTO {
         this.depositpaid = depositpaid;
     }
 
-    public BookingDates getBookingDates() {
+    public BookingDates getBookingdates() {
         return bookingdates;
     }
 
-    public void setBookingDates(BookingDates bookingdates) {
+    public void setBookingdates(BookingDates bookingdates) {
         this.bookingdates = bookingdates;
     }
 

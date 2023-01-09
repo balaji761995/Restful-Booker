@@ -80,8 +80,8 @@ public class UpdateHotelBookingTest extends BaseTest {
         softAssert.assertEquals(getBookingResponse.getLastname(), lastName);
         softAssert.assertEquals(getBookingResponse.getTotalprice(), Float.parseFloat(price));
         softAssert.assertEquals(getBookingResponse.getDepositpaid(), Boolean.parseBoolean(depositPaid));
-        softAssert.assertEquals(getBookingResponse.getBookingDates().getCheckin(), checkInDate);
-        softAssert.assertEquals(getBookingResponse.getBookingDates().getCheckout(), checkOutDate);
+        softAssert.assertEquals(getBookingResponse.getBookingdates().getCheckin(), checkInDate);
+        softAssert.assertEquals(getBookingResponse.getBookingdates().getCheckout(), checkOutDate);
         softAssert.assertEquals(getBookingResponse.getAdditionalneeds(), additionalNeeds);
 
         softAssert.assertAll();

@@ -90,10 +90,10 @@ public class PartialUpdateHotelBookingTest extends BaseTest {
             softAssert.assertEquals(getBookingResponse.getDepositpaid(), Boolean.parseBoolean(depositPaid));
         }
         if (checkInDate != null) {
-            softAssert.assertEquals(getBookingResponse.getBookingDates().getCheckin(), checkInDate);
+            softAssert.assertEquals(getBookingResponse.getBookingdates().getCheckin(), checkInDate);
         }
         if (checkOutDate != null) {
-            softAssert.assertEquals(getBookingResponse.getBookingDates().getCheckout(), checkOutDate);
+            softAssert.assertEquals(getBookingResponse.getBookingdates().getCheckout(), checkOutDate);
         }
         if (additionalNeeds != null) {
             softAssert.assertEquals(getBookingResponse.getAdditionalneeds(), additionalNeeds);

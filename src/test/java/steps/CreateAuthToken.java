@@ -14,8 +14,8 @@ public class CreateAuthToken extends BaseTest {
         authCreds.setPassword(password);
 
         String token = RestAssured.given().header("Content-Type", "application/json").body(authCreds).basePath(basePath)
-                .when().log().everything().post()
-                .then().log().everything().extract().jsonPath().get("token").toString();
+                .when().post()
+                .then().extract().jsonPath().get("token").toString();
 
         return token;
 
