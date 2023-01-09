@@ -5,7 +5,7 @@
         <listener class-name="steps.Listeners"/>
     </listeners>
 
-    <test thread-count="1" name="class">
+    <test thread-count="5" name="class">
         <classes>
             <class name="hotelBookingTest.CreateHotelBookingTest"/>
             <class name="hotelBookingTest.GetHotelBookingIdsTest"/>

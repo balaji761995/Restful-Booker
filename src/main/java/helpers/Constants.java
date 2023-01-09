@@ -14,5 +14,12 @@ public class Constants {
     public static final String CHECK_OUT_DATE = "2022-09-10";
     public static final String ADDITIONAL_NEEDS = "Lunch";
 
+    //Request types
+    public static final String POST = "post";
+    public static final String GET = "get";
+    public static final String DELETE = "delete";
+    public static final String PUT = "put";
+    public static final String PATCH = "patch";
+
 
 }

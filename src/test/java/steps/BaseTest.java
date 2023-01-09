@@ -7,12 +7,14 @@ import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
-import org.apache.commons.io.output.WriterOutputStream;
 import org.testng.ITestContext;
-import org.testng.annotations.*;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeTest;
 import org.testng.asserts.SoftAssert;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -24,8 +26,6 @@ public class BaseTest {
     public static Headers headers;
     public static String userName, password;
     public static SoftAssert softAssert;
-    public static StringWriter requestWriter;
-    public static PrintStream requestCapture;
     public static ExtentTest test;
     public static ExtentReports extentReports;
     public static ThreadLocal<ExtentTest> extentTest = new ThreadLocal<ExtentTest>();
@@ -41,33 +41,25 @@ public class BaseTest {
         password = prop.getProperty("password");
 
         //To create request and response log in console
-        RestAssured.filters(new RequestLoggingFilter(),new ResponseLoggingFilter());
+        RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
 
         //for extent report creation
         extentReports = new ExtentReports(System.getProperty("user.dir") + File.separator + "reports" + File.separator
-                +context.getSuite().getName()+"TestResults" + ".html");
+                + context.getSuite().getName() + "TestResults" + ".html");
 
         softAssert = new SoftAssert();
 
     }
 
-    @BeforeMethod
-    public void loggingRequestAndResponseBody(){
-        //To store the request logs in String
-        requestWriter = new StringWriter();
-        requestCapture = new PrintStream(new WriterOutputStream(requestWriter));
-
-    }
-
-
+    //Creating the headers
     @BeforeTest
     public void createHeaders() {
 
         String authToken = new CreateAuthToken().createAuthToken();
 
-        Header header1 = new Header("Content-Type","application/json");
-        Header header2 = new Header("Accept","application/json");
-        Header header3 = new Header("Cookie","token="+authToken);
+        Header header1 = new Header("Content-Type", "application/json");
+        Header header2 = new Header("Accept", "application/json");
+        Header header3 = new Header("Cookie", "token=" + authToken);
 
         List<Header> headerList = new ArrayList<>();
         headerList.add(header1);

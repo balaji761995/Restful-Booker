@@ -3,24 +3,20 @@ package hotelBookingTest;
 import DTOFactories.BookingPayloadDTOFactory;
 import DTOs.BookingPayloadDTO;
 import DTOs.CreateBookingResponseDTO;
-import com.relevantcodes.extentreports.LogStatus;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.filter.log.RequestLoggingFilter;
-import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import org.apache.commons.io.output.WriterOutputStream;
 import org.apache.http.HttpStatus;
-import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import steps.BaseTest;
 import steps.DataProviders;
 import steps.GetBookingDetails;
 
-import java.io.PrintStream;
-import java.io.StringWriter;
 import java.util.ArrayList;
+
+import static helpers.Constants.PUT;
+import static steps.SendRequest.sendRequest;
 
 public class UpdateHotelBookingTest extends BaseTest {
 
@@ -29,7 +25,7 @@ public class UpdateHotelBookingTest extends BaseTest {
     String bookingId;
 
     @BeforeMethod
-    public void createHotelBooking(){
+    public void createHotelBooking() {
 
         BookingPayloadDTO payload = new BookingPayloadDTOFactory().createBookingPayloadDTOFactoryWithConstantTestData();
 
@@ -52,8 +48,9 @@ public class UpdateHotelBookingTest extends BaseTest {
 
     }
 
-    @Test(dataProvider = "createHotelBookingTestData",dataProviderClass = DataProviders.class)
-    public void updateHotelBookingTest(ArrayList<String> testData){
+    //Verification of update hotel booking end point
+    @Test(dataProvider = "createHotelBookingTestData", dataProviderClass = DataProviders.class)
+    public void updateHotelBookingTest(ArrayList<String> testData) {
 
         String firstName = testData.get(0);
         String lastName = testData.get(1);
@@ -66,34 +63,26 @@ public class UpdateHotelBookingTest extends BaseTest {
         BookingPayloadDTO payload = new BookingPayloadDTOFactory().createBookingPayloadDTOFactoryWithDataProviderTestData(testData);
 
         //Creating Request specification
-        RequestSpecification request = RestAssured.given();
-        request.headers(headers);
-        request.body(payload);
-        request.basePath(basePathUpdateBooking);
+        RequestSpecification putRequest = RestAssured.given();
+        putRequest.headers(headers);
+        putRequest.body(payload);
+        putRequest.pathParam("id", bookingId);
+        putRequest.basePath(basePathUpdateBooking);
 
-        //Post Request to update hotel booking details
-        Response response = request.pathParam("id",bookingId).filter(new RequestLoggingFilter(requestCapture))
-                .when().put();
-
-        Assert.assertEquals(response.getStatusCode(),HttpStatus.SC_OK);
-
-        requestCapture.flush();
-
-        //logging request and response in extent report
-        extentTest.get().log(LogStatus.INFO, requestWriter.toString());
-        extentTest.get().log(LogStatus.INFO, "Response : " + response.asPrettyString());
+        //Put Request to update hotel booking details
+        sendRequest(putRequest, PUT).then().statusCode(HttpStatus.SC_OK);
 
         //Fetch booking details using get request
         BookingPayloadDTO getBookingResponse = new GetBookingDetails().getHotelBookingDetails(bookingId);
 
         //Verifying the booking details
-        softAssert.assertEquals(getBookingResponse.getFirstname(),firstName);
-        softAssert.assertEquals(getBookingResponse.getLastname(),lastName);
-        softAssert.assertEquals(getBookingResponse.getTotalprice(),Float.parseFloat(price));
+        softAssert.assertEquals(getBookingResponse.getFirstname(), firstName);
+        softAssert.assertEquals(getBookingResponse.getLastname(), lastName);
+        softAssert.assertEquals(getBookingResponse.getTotalprice(), Float.parseFloat(price));
         softAssert.assertEquals(getBookingResponse.getDepositpaid(), Boolean.parseBoolean(depositPaid));
-        softAssert.assertEquals(getBookingResponse.getBookingDates().getCheckin(),checkInDate);
-        softAssert.assertEquals(getBookingResponse.getBookingDates().getCheckout(),checkOutDate);
-        softAssert.assertEquals(getBookingResponse.getAdditionalneeds(),additionalNeeds);
+        softAssert.assertEquals(getBookingResponse.getBookingDates().getCheckin(), checkInDate);
+        softAssert.assertEquals(getBookingResponse.getBookingDates().getCheckout(), checkOutDate);
+        softAssert.assertEquals(getBookingResponse.getAdditionalneeds(), additionalNeeds);
 
         softAssert.assertAll();
 

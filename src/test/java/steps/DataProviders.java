@@ -9,12 +9,12 @@ import static helpers.ReadDataFromExcel.readTestDataFromExcel;
 
 public class DataProviders {
 
-    @DataProvider(name="createHotelBookingTestData")
+    @DataProvider(name = "createHotelBookingTestData")
     public static Object[] createHotelBookingTestData() throws IOException {
         return readTestDataFromExcel(HOTEL_BOOKING_TEST_DATA, "createHotelBooking");
     }
 
-    @DataProvider(name="partialHotelBookingTestData")
+    @DataProvider(name = "partialHotelBookingTestData")
     public static Object[] partialHotelBookingTestData() throws IOException {
         return readTestDataFromExcel(HOTEL_BOOKING_TEST_DATA, "partialUpdateBooking");
     }
